@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - FeatureIQ Analytics Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0a0e14 0%, #141920 100%);
+      color: #e6edf3;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-container {
+      background: #141920;
+      border: 1px solid #1e2433;
+      border-radius: 16px;
+      padding: 48px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .logo-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #00e5cc, #1a9fff);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 700;
+      color: #0a0e14;
+    }
+
+    .logo-title {
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: #00e5cc;
+      margin-bottom: 8px;
+    }
+
+    .logo-subtitle {
+      font-size: 14px;
+      color: #6e7681;
+      font-weight: 500;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #8b949e;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: #0a0e14;
+      border: 1.5px solid #1e2433;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #e6edf3;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #00e5cc;
+      box-shadow: 0 0 0 3px rgba(0, 229, 204, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: #6e7681;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #00e5cc, #1a9fff);
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0a0e14;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      margin-top: 8px;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 229, 204, 0.3);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 24px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+      animation: slideDown 0.3s;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert-error {
+      background: rgba(255, 51, 102, 0.1);
+      border: 1px solid #ff3366;
+      color: #ff3366;
+    }
+
+    .alert-success {
+      background: rgba(0, 229, 204, 0.1);
+      border: 1px solid #00e5cc;
+      color: #00e5cc;
+    }
+
+    .demo-credentials {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #1e2433;
+    }
+
+    .demo-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6e7681;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .credential-item {
+      background: #0a0e14;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      border: 1px solid #1e2433;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .credential-item:hover {
+      border-color: #00e5cc;
+      background: rgba(0, 229, 204, 0.05);
+    }
+
+    .credential-label {
+      color: #6e7681;
+      margin-right: 8px;
+    }
+
+    .credential-value {
+      color: #00e5cc;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #0a0e14;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 12px;
+      color: #6e7681;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 32px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <div class="logo-icon">FIQ</div>
+      <div class="logo-title">FeatureIQ</div>
+      <div class="logo-subtitle">Analytics Platform</div>
+    </div>
+
+    <div id="alert" class="alert"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Username / Email</label>
+        <input 
+          type="text" 
+          id="username" 
+          class="form-input" 
+          placeholder="admin@finspark.io"
+          required
+          autocomplete="username"
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          class="form-input" 
+          placeholder="Enter your password"
+          required
+          autocomplete="current-password"
+        >
+      </div>
+
+      <button type="submit" class="btn-login" id="loginBtn">
+        Sign In
+      </button>
+    </form>
+
+    <div class="demo-credentials">
+      <div class="demo-title">Demo Accounts (Click to Auto-Fill)</div>
+      
+      <div class="credential-item" onclick="fillCredentials('admin@finspark.io', 'admin123')">
+        <span class="credential-label">Admin:</span>
+        <span class="credential-value">admin@finspark.io / admin123</span>
+      </div>
+      
+      <div class="credential-item" onclick="fillCredentials('analyst@finspark.io', 'analyst123')">
+        <span class="credential-label">Analyst:</span>
+        <span class="credential-value">analyst@finspark.io / analyst123</span>
+      </div>
+      
+      <div class="credential-item" onclick="fillCredentials('viewer@finspark.io', 'viewer123')">
+        <span class="credential-label">Viewer:</span>
+        <span class="credential-value">viewer@finspark.io / viewer123</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      &copy; 2024 FeatureIQ Analytics Platform
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    
+    function fillCredentials(username, password) {
+      document.getElementById('username').value = username;
+      document.getElementById('password').value = password;
+      document.getElementById('username').focus();
+    }
+
+    function showAlert(message, type = 'error') {
+      const alert = document.getElementById('alert');
+      alert.textContent = message;
+      alert.className = `alert alert-${type} show`;
+      
+      setTimeout(() => {
+        alert.classList.remove('show');
+      }, 5000);
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const loginBtn = document.getElementById('loginBtn');
+      
+      // Disable button and show loading
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<span class="loading-spinner"></span>Signing in...';
+      
+      try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'Login failed');
+        }
+        
+        // Store token and user info
+        localStorage.setItem('auth_token', data.token);
+        localStorage.setItem('user_info', JSON.stringify(data.user));
+        
+        showAlert('Login successful! Redirecting...', 'success');
+        
+        // Redirect to dashboard after short delay
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+        
+      } catch (error) {
+        console.error('Login error:', error);
+        showAlert(error.message || 'Login failed. Please check your credentials.');
+        
+        // Re-enable button
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign In';
+      }
+    });
+
+    // Check if already logged in
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        // Verify token is still valid
+        fetch(`${API_URL}/auth/me`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.href = 'dashboard.html';
+          } else {
+            // Invalid token, clear it
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_info');
+          }
+        })
+        .catch(() => {
+          // Network error or invalid token
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('user_info');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

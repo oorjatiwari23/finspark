@@ -1,0 +1,19 @@
+{
+  "name": "finspark-backend",
+  "version": "2.0.0",
+  "description": "FinSpark Feature Intelligence Backend with Authentication & On-Prem Sync",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.3",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

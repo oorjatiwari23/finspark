@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FeatureIQ Analytics Platform</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e14;
+      --bg-secondary: #141920;
+      --bg-tertiary: #1a1f2e;
+      --border: #1e2433;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #6e7681;
+      --cyan: #00e5cc;
+      --blue: #1a9fff;
+      --orange: #ff9500;
+      --red: #ff3366;
+      --green: #00e5cc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+    }
+
+    .logo {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .logo h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--cyan);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .logo-subtitle {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav {
+      padding: 0 12px;
+    }
+
+    .nav-section {
+      margin-bottom: 24px;
+    }
+
+    .nav-section-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 0 12px 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: var(--bg-tertiary);
+      color: var(--cyan);
+      border-left: 2px solid var(--cyan);
+    }
+
+    .nav-icon {
+      width: 16px;
+      margin-right: 10px;
+      font-size: 14px;
+    }
+
+    .main {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .top-bar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tenant-selector {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tenant-selector label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    select {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--cyan);
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--cyan);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--cyan);
+    }
+
+    .btn-primary {
+      background: var(--cyan);
+      color: var(--bg-primary);
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 32px;
+    }
+
+    .page-header {
+      margin-bottom: 28px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .page-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .metric-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 0.2s;
+    }
+
+    .metric-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-2px);
+    }
+
+    .metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .metric-value {
+      font-size: 36px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .metric-card.green .metric-value {
+      color: var(--green);
+    }
+
+    .metric-card.orange .metric-value {
+      color: var(--orange);
+    }
+
+    .metric-card.blue .metric-value {
+      color: var(--blue);
+    }
+
+    .metric-card.red .metric-value {
+      color: var(--red);
+    }
+
+    .metric-change {
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 4px;
+    }
+
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .chart-container {
+      height: 320px;
+      position: relative;
+    }
+
+    .list-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+
+    .list-item:hover {
+      border-color: var(--cyan);
+      transform: translateX(4px);
+    }
+
+    .list-item-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .list-item-meta {
+      color: var(--text-secondary);
+      font-size: 11px;
+    }
+
+    .prediction-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-left: 3px solid;
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+    }
+
+    .prediction-card:hover {
+      transform: translateX(6px);
+    }
+
+    .prediction-card.high-risk {
+      border-left-color: var(--red);
+    }
+
+    .prediction-card.medium-risk {
+      border-left-color: var(--orange);
+    }
+
+    .prediction-card.low-risk {
+      border-left-color: var(--green);
+    }
+
+    .prediction-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .prediction-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .risk-badge {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .risk-badge.high {
+      background: rgba(255, 51, 102, 0.2);
+      color: var(--red);
+      border: 1px solid var(--red);
+    }
+
+    .risk-badge.medium {
+      background: rgba(255, 149, 0, 0.2);
+      color: var(--orange);
+      border: 1px solid var(--orange);
+    }
+
+    .risk-badge.low {
+      background: rgba(0, 229, 204, 0.2);
+      color: var(--green);
+      border: 1px solid var(--green);
+    }
+
+    .prediction-score {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 10px 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .prediction-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .prediction-action {
+      background: rgba(0, 229, 204, 0.1);
+      border-left: 2px solid var(--cyan);
+      padding: 10px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 20px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .alert-info {
+      background: rgba(26, 159, 255, 0.1);
+      border: 1px solid var(--blue);
+      color: var(--blue);
+    }
+
+    .alert-success {
+      background: rgba(0, 229, 204, 0.1);
+      border: 1px solid var(--green);
+      color: var(--green);
+    }
+
+    .alert-warning {
+      background: rgba(255, 149, 0, 0.1);
+      border: 1px solid var(--orange);
+      color: var(--orange);
+    }
+
+    .segment-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+    }
+
+    .segment-card:hover {
+      border-color: var(--cyan);
+    }
+
+    .segment-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .segment-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: rgba(0, 229, 204, 0.1);
+      border: 1px solid var(--cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      font-size: 24px;
+    }
+
+    .segment-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .segment-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .segment-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--cyan);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .anomaly-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-left: 3px solid;
+      border-radius: 6px;
+      padding: 18px;
+      margin-bottom: 14px;
+      transition: all 0.2s;
+    }
+
+    .anomaly-card:hover {
+      transform: translateX(6px);
+    }
+
+    .anomaly-card.high {
+      border-left-color: var(--red);
+    }
+
+    .anomaly-card.medium {
+      border-left-color: var(--orange);
+    }
+
+    .anomaly-card.low {
+      border-left-color: var(--green);
+    }
+
+    .anomaly-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .anomaly-type {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .anomaly-entity {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .anomaly-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .anomaly-score {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 48px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 180px;
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <h1>FeatureIQ</h1>
+        <div class="logo-subtitle">Analytics Platform</div>
+      </div>
+
+      <nav class="nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Analytics</div>
+          <div class="nav-item active" onclick="switchTab('overview')">
+            <span class="nav-icon">◆</span>
+            Overview
+          </div>
+          <div class="nav-item" onclick="switchTab('features')">
+            <span class="nav-icon">▤</span>
+            Features
+          </div>
+          <div class="nav-item" onclick="switchTab('customers')">
+            <span class="nav-icon">△</span>
+            Customers
+          </div>
+          <div class="nav-item" onclick="switchTab('roi')">
+            <span class="nav-icon">●</span>
+            License ROI
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">AI Intelligence</div>
+          <div class="nav-item" onclick="switchTab('ai-churn')">
+            <span class="nav-icon">▥</span>
+            Churn Prediction
+          </div>
+          <div class="nav-item" onclick="switchTab('ai-segments')">
+            <span class="nav-icon">≋</span>
+            Segmentation
+          </div>
+          <div class="nav-item" onclick="switchTab('ai-anomaly')">
+            <span class="nav-icon">◈</span>
+            Anomaly Detection
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Governance</div>
+          <div class="nav-item" onclick="switchTab('governance')">
+            <span class="nav-icon">◉</span>
+            Compliance
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="tenant-selector">
+          <label>Tenant:</label>
+          <select id="tenant-select">
+            <option value="bank-alpha">Bank Alpha</option>
+            <option value="bank-beta">Bank Beta</option>
+            <option value="bank-gamma">Bank Gamma</option>
+          </select>
+        </div>
+
+        <div class="live-indicator">
+          <span class="live-dot"></span>
+          LIVE
+        </div>
+
+        <div class="top-actions">
+          <button class="btn btn-secondary" onclick="exportReport()">Export Report</button>
+          <button class="btn btn-primary" onclick="showConfig()">Configure</button>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        
+        <!-- Tab: Overview -->
+        <div id="overview" class="tab-content active">
+          <div class="page-header">
+            <h1 class="page-title">Overview Dashboard</h1>
+            <div class="page-meta">Last sync: 2 min ago • Deployment: Cloud • Status: Active</div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-card green">
+              <div class="metric-label">Total Features</div>
+              <div class="metric-value" id="stat-features">0</div>
+              <div class="metric-change">Active features tracked</div>
+            </div>
+
+            <div class="metric-card blue">
+              <div class="metric-label">Total Usage</div>
+              <div class="metric-value" id="stat-usage">0</div>
+              <div class="metric-change">Invocations this period</div>
+            </div>
+
+            <div class="metric-card orange">
+              <div class="metric-label">Active Customers</div>
+              <div class="metric-value" id="stat-customers">0</div>
+              <div class="metric-change">Tenants using platform</div>
+            </div>
+
+            <div class="metric-card red">
+              <div class="metric-label">Anomalies</div>
+              <div class="metric-value" id="stat-anomalies">--</div>
+              <div class="metric-change">Unusual patterns detected</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Top Features by Usage</div>
+              <div class="card-subtitle">Most invoked features across all tenants</div>
+            </div>
+            <div class="chart-container">
+              <canvas id="overviewChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Real-Time Activity Feed</div>
+              <div class="card-subtitle">Live telemetry stream • Updates every 5s</div>
+            </div>
+            <div id="event-stream" style="max-height: 300px; overflow-y: auto;"></div>
+          </div>
+        </div>
+
+        <!-- Tab: Features -->
+        <div id="features" class="tab-content">
+          <div class="page-header">
+            <h1 class="page-title">Feature Analysis</h1>
+            <div class="page-meta">Detailed usage breakdown</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">All Features - Usage Ranking</div>
+              <div class="card-subtitle">Sorted by invocation count</div>
+            </div>
+            <div class="chart-container">
+              <canvas id="featuresChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Feature Details</div>
+              <div class="card-subtitle">Sessions • Users • Deployment mode</div>
+            </div>
+            <div id="feature-details"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Journey Funnel Analytics</div>
+              <div class="card-subtitle">Conversion rates through loan origination process</div>
+            </div>
+            
+            <div style="padding: 20px;">
+              <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; align-items: end;">
+                <div style="text-align: center;">
+                  <div style="background: linear-gradient(135deg, var(--cyan), var(--blue)); height: 200px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-weight: 700; font-size: 20px; font-family: 'JetBrains Mono', monospace;">
+                    100%
+                  </div>
+                  <div style="margin-top: 12px; font-weight: 600; font-size: 12px; color: var(--text-primary);">Application</div>
+                  <div style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">12,847 users</div>
+                </div>
+                <div style="text-align: center;">
+                  <div style="background: linear-gradient(135deg, var(--cyan), var(--blue)); height: 172px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-weight: 700; font-size: 20px; font-family: 'JetBrains Mono', monospace;">
+                    86%
+                  </div>
+                  <div style="margin-top: 12px; font-weight: 600; font-size: 12px; color: var(--text-primary);">Credit Check</div>
+                  <div style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">11,048 users</div>
+                </div>
+                <div style="text-align: center;">
+                  <div style="background: linear-gradient(135deg, var(--cyan), var(--blue)); height: 150px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-weight: 700; font-size: 20px; font-family: 'JetBrains Mono', monospace;">
+                    75%
+                  </div>
+                  <div style="margin-top: 12px; font-weight: 600; font-size: 12px; color: var(--text-primary);">Document Upload</div>
+                  <div style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">9,635 users</div>
+                </div>
+                <div style="text-align: center;">
+                  <div style="background: linear-gradient(135deg, var(--cyan), var(--blue)); height: 132px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-weight: 700; font-size: 20px; font-family: 'JetBrains Mono', monospace;">
+                    66%
+                  </div>
+                  <div style="margin-top: 12px; font-weight: 600; font-size: 12px; color: var(--text-primary);">Risk Assessment</div>
+                  <div style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">8,479 users</div>
+                </div>
+                <div style="text-align: center;">
+                  <div style="background: linear-gradient(135deg, var(--cyan), var(--blue)); height: 120px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-weight: 700; font-size: 20px; font-family: 'JetBrains Mono', monospace;">
+                    60%
+                  </div>
+                  <div style="margin-top: 12px; font-weight: 600; font-size: 12px; color: var(--text-primary);">Approval</div>
+                  <div style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">7,708 users</div>
+                </div>
+                <div style="text-align: center;">
+                  <div style="background: linear-gradient(135deg, var(--green), var(--cyan)); height: 108px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-weight: 700; font-size: 20px; font-family: 'JetBrains Mono', monospace;">
+                    54%
+                  </div>
+                  <div style="margin-top: 12px; font-weight: 600; font-size: 12px; color: var(--text-primary);">Disbursement</div>
+                  <div style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">6,937 users</div>
+                </div>
+              </div>
+              <div class="alert alert-warning" style="margin-top: 24px;">
+                <strong>Key Insight:</strong> 25% drop-off between Credit Check and Document Upload suggests friction in document submission. Consider implementing guided upload flows or document pre-filling.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Customers -->
+        <div id="customers" class="tab-content">
+          <div class="page-header">
+            <h1 class="page-title">Customer Analysis</h1>
+            <div class="page-meta">Cross-tenant comparison</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Customer Metrics</div>
+              <div class="card-subtitle">Usage by tenant</div>
+            </div>
+            <div id="tenants-list"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Comparison Chart</div>
+              <div class="card-subtitle">Events vs Features used</div>
+            </div>
+            <div class="chart-container">
+              <canvas id="tenantsChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: ROI -->
+        <div id="roi" class="tab-content">
+          <div class="page-header">
+            <h1 class="page-title">License ROI Analysis</h1>
+            <div class="page-meta">Identify unused licenses and optimize spending</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">ROI Breakdown</div>
+                <div class="card-subtitle">Licensed vs Actual Usage</div>
+              </div>
+              <select id="roi-tenant" onchange="loadROI()">
+                <option value="bank-alpha">Bank Alpha</option>
+                <option value="bank-beta">Bank Beta</option>
+                <option value="bank-gamma">Bank Gamma</option>
+              </select>
+            </div>
+            <div id="roi-content"></div>
+          </div>
+        </div>
+
+        <!-- Tab: AI Churn -->
+        <div id="ai-churn" class="tab-content">
+          <div class="page-header">
+            <h1 class="page-title">AI Churn Prediction</h1>
+            <div class="page-meta">Machine learning-based churn risk analysis</div>
+          </div>
+
+          <div class="alert alert-info">
+            Random Forest Classifier • Predicts customer churn probability
+          </div>
+
+          <button class="btn btn-primary" onclick="trainAndPredict()">
+            Run AI Analysis
+          </button>
+
+          <div id="ai-train-status" style="margin-top: 24px;"></div>
+          <div id="ai-predictions" style="margin-top: 24px;"></div>
+        </div>
+
+        <!-- Tab: AI Segments -->
+        <div id="ai-segments" class="tab-content">
+          <div class="page-header">
+            <h1 class="page-title">Customer Segmentation</h1>
+            <div class="page-meta">K-Means clustering • Behavioral pattern analysis</div>
+          </div>
+
+          <div class="alert alert-info">
+            K-Means Algorithm • Automatically groups customers by usage patterns
+          </div>
+
+          <button class="btn btn-primary" onclick="showAIGroups()">
+            Generate Segments
+          </button>
+
+          <div id="ai-groups-content" style="margin-top: 24px;"></div>
+        </div>
+
+        <!-- Tab: Anomaly Detection -->
+        <div id="ai-anomaly" class="tab-content">
+          <div class="page-header">
+            <h1 class="page-title">Anomaly Detection</h1>
+            <div class="page-meta">Isolation Forest • Detects unusual usage patterns and security threats</div>
+          </div>
+
+          <div class="alert alert-info">
+            Isolation Forest Algorithm • Identifies behavioral anomalies, usage spikes, and temporal irregularities
+          </div>
+
+          <button class="btn btn-primary" onclick="detectAnomalies()">
+            Detect Anomalies
+          </button>
+
+          <div id="anomaly-status" style="margin-top: 24px;"></div>
+          <div id="anomaly-results" style="margin-top: 24px;"></div>
+        </div>
+
+        <!-- Tab: Governance -->
+        <div id="governance" class="tab-content">
+          <div class="page-header">
+            <h1 class="page-title">Governance & Compliance</h1>
+            <div class="page-meta">Configure telemetry consent, PII masking, audit logs, and access controls</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Telemetry Configuration</div>
+              <div class="card-subtitle">Control data collection and privacy settings</div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+              <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px;">Telemetry Consent Level</label>
+                <select style="width: 100%;">
+                  <option selected>Full Telemetry (All Features)</option>
+                  <option>Aggregated Only (No PII)</option>
+                  <option>Minimal (Essential Only)</option>
+                  <option>Disabled</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px;">PII Masking Policy</label>
+                <select style="width: 100%;">
+                  <option selected>Automatic PII Detection & Masking</option>
+                  <option>Hash-Based Anonymization</option>
+                  <option>Complete PII Exclusion</option>
+                  <option>Manual Review Required</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px;">Data Retention Period</label>
+                <select style="width: 100%;">
+                  <option>30 Days</option>
+                  <option selected>90 Days</option>
+                  <option>180 Days</option>
+                  <option>365 Days</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px;">Audit Log Level</label>
+                <select style="width: 100%;">
+                  <option>Off</option>
+                  <option>Error Only</option>
+                  <option selected>Standard (Info + Error)</option>
+                  <option>Verbose (Debug Level)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="alert alert-success">
+              ✓ GDPR Compliant • CCPA Compliant • SOC 2 Type II • ISO 27001 Certified
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Recent Audit Logs</div>
+              <div class="card-subtitle">Configuration changes and system events</div>
+            </div>
+            
+            <div class="list-item">
+              <div class="list-item-title">admin@bankalpha.com</div>
+              <div class="list-item-meta">
+                2024-05-11 14:23:45 • Changed telemetry settings • System Configuration • SUCCESS
+              </div>
+            </div>
+            <div class="list-item">
+              <div class="list-item-title">analytics@bankbeta.com</div>
+              <div class="list-item-meta">
+                2024-05-11 13:15:22 • Exported usage report • Feature Analytics • SUCCESS
+              </div>
+            </div>
+            <div class="list-item">
+              <div class="list-item-title">system</div>
+              <div class="list-item-meta">
+                2024-05-11 11:47:18 • Automated PII masking • Data Processing • SUCCESS
+              </div>
+            </div>
+            <div class="list-item">
+              <div class="list-item-title">admin@bankgamma.com</div>
+              <div class="list-item-meta">
+                2024-05-11 09:32:56 • Updated data retention policy • Compliance Settings • SUCCESS
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Deployment Mode Analytics</div>
+              <div class="card-subtitle">On-Premise vs Cloud usage comparison</div>
+            </div>
+            
+            <div id="deployment-comparison"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BACKEND_API = 'http://localhost:3000/api';
+    const ML_API = 'http://localhost:5000';
+
+    // Mock data for demo (works without backend)
+    const MOCK_DATA = {
+      features: [
+        { name: 'loan-application', invocations: 12847, cloud: 10920, onprem: 1927, adoption: 82 },
+        { name: 'credit-check', invocations: 15234, cloud: 14015, onprem: 1219, adoption: 90 },
+        { name: 'risk-assessment', invocations: 9456, cloud: 7185, onprem: 2271, adoption: 71 },
+        { name: 'document-upload', invocations: 11892, cloud: 10463, onprem: 1429, adoption: 85 },
+        { name: 'loan-approval', invocations: 8765, cloud: 7012, onprem: 1753, adoption: 78 },
+        { name: 'disbursement', invocations: 7234, cloud: 5787, onprem: 1447, adoption: 65 },
+        { name: 'repayment-schedule', invocations: 6543, cloud: 5234, onprem: 1309, adoption: 58 },
+        { name: 'customer-profile', invocations: 9876, cloud: 7901, onprem: 1975, adoption: 72 },
+        { name: 'reports', invocations: 2341, cloud: 1873, onprem: 468, adoption: 39 }
+      ],
+      tenants: [
+        { name: 'Bank Alpha', id: 'bank-alpha', deployment: 'Cloud', users: 847, events: 52341, features: 9, utilization: 88 },
+        { name: 'Bank Beta', id: 'bank-beta', deployment: 'On-Premise', users: 623, events: 38234, features: 7, utilization: 75 },
+        { name: 'Bank Gamma', id: 'bank-gamma', deployment: 'Cloud', users: 1234, events: 67892, features: 9, utilization: 92 }
+      ],
+      customers: [
+        { name: 'Rajesh Kumar Sharma', tenant: 'Bank Alpha', usage: 234, lastSeen: '2 min ago', risk: 'low' },
+        { name: 'Priya Patel', tenant: 'Bank Gamma', usage: 456, lastSeen: '5 min ago', risk: 'low' },
+        { name: 'Arjun Reddy', tenant: 'Bank Beta', usage: 123, lastSeen: '15 min ago', risk: 'medium' },
+        { name: 'Sneha Deshmukh', tenant: 'Bank Gamma', usage: 567, lastSeen: '3 min ago', risk: 'low' },
+        { name: 'Vikram Singh Chauhan', tenant: 'Bank Alpha', usage: 89, lastSeen: '1 hour ago', risk: 'high' }
+      ],
+      events: []
+    };
+
+    // Generate mock events
+    const featureNames = ['loan-application', 'credit-check', 'risk-assessment', 'document-upload', 'loan-approval'];
+    const tenantIds = ['bank-alpha', 'bank-beta', 'bank-gamma'];
+    for (let i = 0; i < 50; i++) {
+      MOCK_DATA.events.push({
+        timestamp: Date.now() - (i * 10000),
+        featureName: featureNames[Math.floor(Math.random() * featureNames.length)],
+        tenantId: tenantIds[Math.floor(Math.random() * tenantIds.length)],
+        userId: 'user-' + Math.floor(Math.random() * 1000),
+        deploymentMode: Math.random() > 0.5 ? 'cloud' : 'onprem'
+      });
+    }
+
+    // Use mock data instead of API calls
+    const USE_MOCK_DATA = true;
+    let charts = {};
+    let isAITrained = false;
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+
+      if (tabName === 'customers') loadTenants();
+      if (tabName === 'roi') loadROI();
+      if (tabName === 'governance') loadGovernance();
+    }
+
+    function exportReport() {
+      const reportData = {
+        date: new Date().toISOString().split('T')[0],
+        metrics: {
+          features: document.getElementById('stat-features').textContent,
+          usage: document.getElementById('stat-usage').textContent,
+          customers: document.getElementById('stat-customers').textContent,
+          anomalies: document.getElementById('stat-anomalies').textContent
+        }
+      };
+      
+      const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `featureiq-report-${reportData.date}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      alert('Report exported successfully!');
+    }
+
+    function showConfig() {
+      const config = prompt('Enter refresh interval in seconds (current: 5):', '5');
+      if (config && !isNaN(config) && config > 0) {
+        clearInterval(window.refreshInterval);
+        window.refreshInterval = setInterval(loadAllData, parseInt(config) * 1000);
+        alert(`Refresh interval updated to ${config} seconds`);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initCharts();
+      loadAllData();
+      window.refreshInterval = setInterval(loadAllData, 5000);
+    });
+
+    function initCharts() {
+      const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            border: { display: false },
+            grid: { color: '#1e2433' },
+            ticks: { color: '#6e7681', font: { family: 'JetBrains Mono', size: 11 } }
+          },
+          x: {
+            border: { display: false },
+            grid: { display: false },
+            ticks: { color: '#6e7681', font: { family: 'JetBrains Mono', size: 11 } }
+          }
+        }
+      };
+
+      charts.overview = new Chart(document.getElementById('overviewChart').getContext('2d'), {
+        type: 'bar',
+        data: { 
+          labels: [], 
+          datasets: [{ 
+            data: [],
+            backgroundColor: '#00e5cc',
+            borderRadius: 4
+          }] 
+        },
+        options: chartOptions
+      });
+
+      charts.features = new Chart(document.getElementById('featuresChart').getContext('2d'), {
+        type: 'bar',
+        data: { 
+          labels: [], 
+          datasets: [{ 
+            data: [],
+            backgroundColor: '#00e5cc',
+            borderRadius: 4
+          }] 
+        },
+        options: { ...chartOptions, indexAxis: 'y' }
+      });
+
+      charts.tenants = new Chart(document.getElementById('tenantsChart').getContext('2d'), {
+        type: 'bar',
+        data: { 
+          labels: [], 
+          datasets: [
+            { label: 'Events', data: [], backgroundColor: '#00e5cc', borderRadius: 4 },
+            { label: 'Features', data: [], backgroundColor: '#1a9fff', borderRadius: 4 }
+          ] 
+        },
+        options: chartOptions
+      });
+    }
+
+    async function loadAllData() {
+      try {
+        console.log('Loading data from:', BACKEND_API);
+        const res = await fetch(`${BACKEND_API}/analytics/heatmap`);
+        
+        if (!res.ok) {
+          console.error('Backend response not OK:', res.status);
+          return;
+        }
+        
+        const data = await res.json();
+        console.log('Data received:', data);
+        const items = data.data || [];
+
+        if (items.length === 0) {
+          console.warn('No data returned from backend');
+        }
+
+        document.getElementById('stat-features').textContent = items.length;
+        document.getElementById('stat-usage').textContent = 
+          items.reduce((sum, i) => sum + i.invocation_count, 0);
+
+        const tenantsRes = await fetch(`${BACKEND_API}/analytics/tenant-comparison`);
+        const tenantsData = await tenantsRes.json();
+        document.getElementById('stat-customers').textContent = tenantsData.data.length;
+
+        const top10 = items.slice(0, 10);
+        charts.overview.data.labels = top10.map(i => i.feature_name);
+        charts.overview.data.datasets[0].data = top10.map(i => i.invocation_count);
+        charts.overview.update();
+
+        charts.features.data.labels = items.map(i => i.feature_name);
+        charts.features.data.datasets[0].data = items.map(i => i.invocation_count);
+        charts.features.update();
+
+        const detailsHTML = items.map(item => `
+          <div class="list-item">
+            <div class="list-item-title">${item.feature_name}</div>
+            <div class="list-item-meta">
+              ${item.invocation_count} uses • 
+              ${item.unique_sessions} sessions • 
+              ${item.unique_users || 0} users • 
+              ${item.deployment_mode}
+            </div>
+          </div>
+        `).join('');
+        document.getElementById('feature-details').innerHTML = detailsHTML;
+
+        loadEventStream();
+      } catch (error) {
+        console.error('Error loading data:', error);
+        document.getElementById('stat-features').textContent = 'ERR';
+        document.getElementById('stat-usage').textContent = 'ERR';
+      }
+    }
+
+    async function loadEventStream() {
+      try {
+        const res = await fetch(`${BACKEND_API}/analytics/stream?limit=10`);
+        const data = await res.json();
+        const events = data.events || [];
+
+        const streamHTML = events.map(e => {
+          const time = new Date(e.timestamp).toLocaleTimeString();
+          return `
+            <div class="list-item">
+              <div class="list-item-meta">
+                ${time} • ${e.tenant_id} • ${e.feature_name} • ${e.deployment_mode}
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        document.getElementById('event-stream').innerHTML = streamHTML || 
+          '<div class="list-item"><div class="list-item-meta">No events yet</div></div>';
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    async function loadTenants() {
+      try {
+        const res = await fetch(`${BACKEND_API}/analytics/tenant-comparison`);
+        const data = await res.json();
+        const tenants = data.data || [];
+
+        const listHTML = tenants.map(t => `
+          <div class="list-item">
+            <div class="list-item-title">${t.tenant_id}</div>
+            <div class="list-item-meta">
+              ${t.total_events} events • 
+              ${t.features_used} features • 
+              ${t.total_sessions} sessions • 
+              ${t.deployment_mode}
+            </div>
+          </div>
+        `).join('');
+        document.getElementById('tenants-list').innerHTML = listHTML;
+
+        charts.tenants.data.labels = tenants.map(t => t.tenant_id);
+        charts.tenants.data.datasets[0].data = tenants.map(t => t.total_events);
+        charts.tenants.data.datasets[1].data = tenants.map(t => t.features_used);
+        charts.tenants.update();
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    async function loadROI() {
+      const tenant = document.getElementById('roi-tenant').value;
+      const content = document.getElementById('roi-content');
+      
+      try {
+        const res = await fetch(`${BACKEND_API}/analytics/roi?tenantId=${tenant}`);
+        const data = await res.json();
+        const features = data.data || [];
+
+        const unused = features.filter(f => f.status === 'unused_licensed');
+        const active = features.filter(f => f.status === 'active');
+        const wastedCost = unused.length * 50000;
+
+        content.innerHTML = `
+          <div class="alert alert-warning" style="margin-top: 20px;">
+            ${unused.length} unused licenses detected • $${wastedCost.toLocaleString()}/year potential waste
+          </div>
+
+          ${unused.length > 0 ? `
+            <h3 style="margin: 24px 0 12px 0; font-size: 11px; font-weight: 600; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 1px;">Unused Licensed Features</h3>
+            ${unused.map(f => `
+              <div class="list-item" style="border-left: 2px solid var(--red);">
+                <div class="list-item-title">${f.feature_name}</div>
+                <div class="list-item-meta">
+                  Status: UNUSED • Usage: ${f.usage_count} • Action: Review license
+                </div>
+              </div>
+            `).join('')}
+          ` : ''}
+
+          ${active.length > 0 ? `
+            <h3 style="margin: 24px 0 12px 0; font-size: 11px; font-weight: 600; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 1px;">Active Features</h3>
+            ${active.map(f => `
+              <div class="list-item" style="border-left: 2px solid var(--green);">
+                <div class="list-item-title">${f.feature_name}</div>
+                <div class="list-item-meta">
+                  Status: ACTIVE • Usage: ${f.usage_count}
+                </div>
+              </div>
+            `).join('')}
+          ` : ''}
+        `;
+      } catch (error) {
+        content.innerHTML = '<div class="alert alert-warning">Error loading ROI data</div>';
+      }
+    }
+
+    async function trainAndPredict() {
+      const statusDiv = document.getElementById('ai-train-status');
+      const predictDiv = document.getElementById('ai-predictions');
+      
+      statusDiv.innerHTML = '<div class="alert alert-info">Training model and generating predictions...</div>';
+      predictDiv.innerHTML = '';
+
+      try {
+        const eventsRes = await fetch(`${BACKEND_API}/analytics/stream?limit=1000`);
+        const eventsData = await eventsRes.json();
+
+        if (eventsData.events.length < 10) {
+          statusDiv.innerHTML = '<div class="alert alert-warning">Insufficient data. Generate more events.</div>';
+          return;
+        }
+
+        await fetch(`${ML_API}/train/churn`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ events: eventsData.events })
+        });
+
+        const predictRes = await fetch(`${ML_API}/predict/churn`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ events: eventsData.events })
+        });
+        const result = await predictRes.json();
+
+        isAITrained = true;
+        statusDiv.innerHTML = '<div class="alert alert-success">Analysis complete</div>';
+
+        const highRisk = result.predictions.filter(p => p.risk_level === 'high').length;
+
+        const sorted = result.predictions.sort((a, b) => b.churn_probability - a.churn_probability);
+        
+        predictDiv.innerHTML = sorted.map(pred => {
+          const riskClass = pred.risk_level === 'high' ? 'high-risk' : 
+                           pred.risk_level === 'medium' ? 'medium-risk' : 'low-risk';
+          const badgeClass = pred.risk_level === 'high' ? 'high' : 
+                            pred.risk_level === 'medium' ? 'medium' : 'low';
+          const action = pred.risk_level === 'high' ? 
+            'Immediate outreach required - Schedule call within 24 hours' :
+            pred.risk_level === 'medium' ?
+            'Monitor closely - Consider engagement campaign' :
+            'Customer healthy - Continue regular touchpoints';
+
+          return `
+            <div class="prediction-card ${riskClass}">
+              <div class="prediction-header">
+                <div class="prediction-name">${pred.tenant_id}</div>
+                <span class="risk-badge ${badgeClass}">${pred.risk_level}</span>
+              </div>
+              <div class="prediction-score" style="color: ${pred.risk_level === 'high' ? 'var(--red)' : pred.risk_level === 'medium' ? 'var(--orange)' : 'var(--green)'}">
+                ${Math.round(pred.churn_probability)}% churn probability
+              </div>
+              <div class="prediction-meta">
+                ${pred.features.total_events} events • 
+                ${pred.features.features_used} features • 
+                ${pred.features.days_inactive.toFixed(0)} days inactive
+              </div>
+              <div class="prediction-action">${action}</div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (error) {
+        statusDiv.innerHTML = '<div class="alert alert-warning">ML service not available. Start ml_service.py</div>';
+      }
+    }
+
+    async function showAIGroups() {
+      const content = document.getElementById('ai-groups-content');
+      content.innerHTML = '<div class="loading">Generating customer segments...</div>';
+
+      if (!isAITrained) {
+        content.innerHTML = '<div class="alert alert-warning">Run churn prediction first</div>';
+        return;
+      }
+
+      try {
+        const eventsRes = await fetch(`${BACKEND_API}/analytics/stream?limit=1000`);
+        const eventsData = await eventsRes.json();
+
+        const clusterRes = await fetch(`${ML_API}/train/clustering`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ events: eventsData.events })
+        });
+        const result = await clusterRes.json();
+
+        const icons = ['★', '◆', '▲'];
+
+        content.innerHTML = result.clusters.map((cluster, idx) => `
+          <div class="segment-card">
+            <div class="segment-header">
+              <div class="segment-icon">${icons[idx]}</div>
+              <div>
+                <div class="segment-title">${cluster.label}</div>
+                <div class="segment-count">${cluster.size} customers</div>
+              </div>
+            </div>
+            <div class="segment-stats">
+              <div>
+                <div class="stat-label">Average Events</div>
+                <div class="stat-value">${Math.round(cluster.avg_events)}</div>
+              </div>
+              <div>
+                <div class="stat-label">Average Features</div>
+                <div class="stat-value">${Math.round(cluster.avg_features)}</div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+      } catch (error) {
+        content.innerHTML = '<div class="alert alert-warning">Error generating segments</div>';
+      }
+    }
+
+    async function detectAnomalies() {
+      const statusDiv = document.getElementById('anomaly-status');
+      const resultsDiv = document.getElementById('anomaly-results');
+      
+      statusDiv.innerHTML = '<div class="alert alert-info">Analyzing patterns and detecting anomalies...</div>';
+      resultsDiv.innerHTML = '';
+
+      try {
+        const eventsRes = await fetch(`${BACKEND_API}/analytics/stream?limit=1000`);
+        const eventsData = await eventsRes.json();
+
+        if (eventsData.events.length < 10) {
+          statusDiv.innerHTML = '<div class="alert alert-warning">Insufficient data. Generate more events.</div>';
+          return;
+        }
+
+        const anomalyRes = await fetch(`${ML_API}/detect/anomalies`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ events: eventsData.events })
+        });
+        const result = await anomalyRes.json();
+
+        if (result.error) {
+          statusDiv.innerHTML = `<div class="alert alert-warning">${result.error}</div>`;
+          return;
+        }
+
+        statusDiv.innerHTML = `<div class="alert alert-success">
+          Scanned ${result.total_events} events • Detected ${result.anomalies_detected} anomalies
+        </div>`;
+
+        // Update dashboard stat
+        document.getElementById('stat-anomalies').textContent = result.anomalies_detected;
+
+        if (result.anomalies.length === 0) {
+          resultsDiv.innerHTML = '<div class="alert alert-info">No anomalies detected - all patterns appear normal</div>';
+          return;
+        }
+
+        resultsDiv.innerHTML = result.anomalies.map(anomaly => {
+          const severityClass = anomaly.severity;
+          
+          return `
+            <div class="anomaly-card ${severityClass}">
+              <div class="anomaly-header">
+                <div class="anomaly-type">${anomaly.type}</div>
+                <span class="risk-badge ${severityClass}">${anomaly.severity}</span>
+              </div>
+              <div class="anomaly-entity">${anomaly.entity}</div>
+              <div class="anomaly-desc">${anomaly.description}</div>
+              <div class="anomaly-score">
+                Anomaly Score: ${anomaly.anomaly_score} • 
+                ${Object.entries(anomaly.metrics).map(([k, v]) => `${k}: ${v}`).join(' • ')}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (error) {
+        console.error('Anomaly detection error:', error);
+        statusDiv.innerHTML = '<div class="alert alert-warning">ML service not available. Start ml_service.py</div>';
+      }
+    }
+
+    function loadGovernance() {
+      const container = document.getElementById('deployment-comparison');
+      
+      const comparisonHTML = `
+        <div style="margin-bottom: 20px;">
+          <div class="alert alert-info">
+            Comparing Cloud vs On-Premise deployment usage patterns across all tenants
+          </div>
+        </div>
+        
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <th style="text-align: left; padding: 12px; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase;">Feature</th>
+              <th style="text-align: left; padding: 12px; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase;">Cloud Usage</th>
+              <th style="text-align: left; padding: 12px; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase;">On-Prem Usage</th>
+              <th style="text-align: right; padding: 12px; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${MOCK_DATA.features.map(f => `
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 14px; font-weight: 600; font-family: 'JetBrains Mono', monospace;">${f.feature_name}</td>
+                <td style="padding: 14px;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="flex: 1; background: rgba(26, 159, 255, 0.2); height: 8px; border-radius: 4px; overflow: hidden;">
+                      <div style="width: ${(f.cloud / f.invocation_count) * 100}%; height: 100%; background: var(--blue);"></div>
+                    </div>
+                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--blue); min-width: 60px;">${f.cloud.toLocaleString()}</span>
+                  </div>
+                </td>
+                <td style="padding: 14px;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="flex: 1; background: rgba(0, 229, 204, 0.2); height: 8px; border-radius: 4px; overflow: hidden;">
+                      <div style="width: ${(f.onprem / f.invocation_count) * 100}%; height: 100%; background: var(--cyan);"></div>
+                    </div>
+                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); min-width: 60px;">${f.onprem.toLocaleString()}</span>
+                  </div>
+                </td>
+                <td style="padding: 14px; text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600;">${f.invocation_count.toLocaleString()}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 32px;">
+          <div class="metric-card blue">
+            <div class="metric-label">Cloud Deployments</div>
+            <div class="metric-value">${MOCK_DATA.tenants.filter(t => t.deployment_mode === 'Cloud').length}</div>
+            <div class="metric-change">Active cloud instances</div>
+          </div>
+          <div class="metric-card green">
+            <div class="metric-label">On-Premise Deployments</div>
+            <div class="metric-value">${MOCK_DATA.tenants.filter(t => t.deployment_mode === 'On-Premise').length}</div>
+            <div class="metric-change">Active on-prem instances</div>
+          </div>
+        </div>
+      `;
+      
+      container.innerHTML = comparisonHTML;
+    }
+  </script>
+</body>
+</html>

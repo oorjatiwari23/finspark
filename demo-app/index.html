@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LendPro | Enterprise Lending Solutions Platform</title>
+  <script src="../sdk/feature-tracker.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary-blue: #0052CC;
+      --primary-dark: #003D99;
+      --accent-teal: #00B8D9;
+      --bg-light: #F4F5F7;
+      --bg-white: #FFFFFF;
+      --text-primary: #172B4D;
+      --text-secondary: #5E6C84;
+      --border: #DFE1E6;
+      --success: #36B37E;
+      --gradient: linear-gradient(135deg, #0052CC 0%, #003D99 100%);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: var(--bg-white);
+      padding: 24px 32px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--border);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: var(--gradient);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 20px;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .header h1 {
+      color: var(--primary-blue);
+      font-size: 26px;
+      font-weight: 800;
+      font-family: 'Manrope', sans-serif;
+      letter-spacing: -0.5px;
+    }
+
+    .header-subtitle {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .config-panel {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .config-panel select {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: white;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .config-panel select:hover {
+      border-color: var(--primary-blue);
+    }
+
+    .config-panel select:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
+    }
+
+    .config-panel label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #E3FCEF;
+      border: 1.5px solid #ABF5D1;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      color: #006644;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      display: inline-block;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+    }
+
+    .sidebar {
+      background: var(--bg-white);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      height: fit-content;
+      border: 1px solid var(--border);
+      position: sticky;
+      top: 24px;
+    }
+
+    .sidebar h3 {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-item {
+      padding: 12px 16px;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg-light);
+      border-left: 3px solid transparent;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .nav-item:hover {
+      background: #DEEBFF;
+      border-left-color: var(--primary-blue);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: #DEEBFF;
+      border-left-color: var(--primary-blue);
+      font-weight: 700;
+      color: var(--primary-blue);
+    }
+
+    .content-area {
+      background: var(--bg-white);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      min-height: 600px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .feature-section {
+      display: none;
+      padding: 32px;
+    }
+
+    .feature-section.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .feature-section h2 {
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--bg-light);
+      font-size: 28px;
+      font-weight: 800;
+      font-family: 'Manrope', sans-serif;
+      letter-spacing: -0.5px;
+    }
+
+    .section-description {
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    #dashboard {
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 700px;
+    }
+
+    .dashboard-content {
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .dashboard-image {
+      background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=1000&fit=crop');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .dashboard-image::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0, 82, 204, 0.1), rgba(0, 61, 153, 0.2));
+    }
+
+    .dashboard-title {
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      font-family: 'Manrope', sans-serif;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      color: var(--text-primary);
+    }
+
+    .dashboard-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .section-image {
+      width: 100%;
+      height: 240px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 10px;
+      margin: 24px 0;
+      border: 1px solid var(--border);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--gradient);
+      color: white;
+      padding: 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 82, 204, 0.2);
+      transition: transform 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0, 82, 204, 0.3);
+    }
+
+    .stat-card h4 {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-card p {
+      font-size: 32px;
+      font-weight: 800;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-primary);
+      background: white;
+      transition: all 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0, 82, 204, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 82, 204, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--bg-light);
+      color: var(--text-primary);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: #E4E5E7;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-danger {
+      background: #DE350B;
+      color: white;
+    }
+
+    .journey-tracker {
+      background: var(--bg-light);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .journey-tracker h4 {
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .journey-steps {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .journey-step {
+      background: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      font-weight: 600;
+      color: var(--primary-blue);
+    }
+
+    .result-box {
+      margin-top: 24px;
+      padding: 24px;
+      background: var(--bg-light);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: none;
+    }
+
+    .result-box.show {
+      display: block;
+      animation: slideDown 0.3s;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-box h3 {
+      color: var(--text-primary);
+      font-size: 20px;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+
+    .result-box .highlight {
+      color: var(--success);
+      font-size: 48px;
+      font-weight: 800;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .notification {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background: white;
+      padding: 16px 24px;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      z-index: 1000;
+      display: none;
+      animation: slideIn 0.3s;
+      border-left: 4px solid var(--success);
+      min-width: 300px;
+    }
+
+    .notification.show {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .notification span {
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .alert-box {
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid;
+    }
+
+    .alert-info {
+      background: #DEEBFF;
+      border-color: var(--primary-blue);
+      color: #0747A6;
+    }
+
+    .alert-success {
+      background: #E3FCEF;
+      border-color: var(--success);
+      color: #006644;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .info-item {
+      background: white;
+      padding: 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .info-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Data Table */
+    .data-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+
+    .data-table thead {
+      background: var(--bg-light);
+    }
+
+    .data-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tbody tr:hover {
+      background: var(--bg-light);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .status-pending {
+      background: #FFF0B3;
+      color: #7A5F0E;
+    }
+
+    .status-approved {
+      background: #ABF5D1;
+      color: #006644;
+    }
+
+    .status-rejected {
+      background: #FFBDAD;
+      color: #BF2600;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--text-primary);
+      color: white;
+      margin-top: 48px;
+      padding: 48px 0 24px;
+    }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 32px;
+    }
+
+    .footer-section h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .footer-section p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .footer-logo-icon {
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-blue);
+      font-weight: 800;
+      font-size: 18px;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .footer-logo-text {
+      font-size: 20px;
+      font-weight: 800;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .footer-bottom {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 24px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-bottom p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-legal a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+
+    .footer-legal a:hover {
+      color: white;
+    }
+
+    .footer-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 8px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      #dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-image {
+        min-height: 300px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .config-panel {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .config-panel select,
+      .config-panel label {
+        width: 100%;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-content {
+        padding: 32px 24px;
+      }
+
+      .dashboard-title {
+        font-size: 32px;
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .footer-legal {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-left">
+        <div class="logo">LP</div>
+        <div>
+          <h1>LendPro Enterprise</h1>
+          <p class="header-subtitle">Powered by FeatureIQ Analytics Platform</p>
+        </div>
+      </div>
+      <div class="config-panel">
+        <select id="tenantSelect">
+          <option value="bank-alpha">Bank Alpha</option>
+          <option value="bank-beta">Bank Beta</option>
+          <option value="bank-gamma">Bank Gamma</option>
+        </select>
+        <select id="deploymentMode">
+          <option value="cloud">Cloud Deployment</option>
+          <option value="on-premise">On-Premise</option>
+        </select>
+        <label>
+          <input type="checkbox" id="trackingEnabled" checked>
+          <span class="status-indicator"></span>
+          System Active
+        </label>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="sidebar">
+        <h3>Navigation</h3>
+        <div class="nav-item active" data-feature="dashboard" data-feature-category="overview">
+          Dashboard
+        </div>
+        <div class="nav-item" data-feature="loan-application" data-feature-category="lending">
+          Loan Application
+        </div>
+        <div class="nav-item" data-feature="credit-check" data-feature-category="risk">
+          Credit Check
+        </div>
+        <div class="nav-item" data-feature="document-upload" data-feature-category="operations">
+          Document Upload
+        </div>
+        <div class="nav-item" data-feature="loan-approval" data-feature-category="lending">
+          Loan Approval
+        </div>
+        <div class="nav-item" data-feature="risk-assessment" data-feature-category="risk">
+          Risk Assessment
+        </div>
+        <div class="nav-item" data-feature="disbursement" data-feature-category="operations">
+          Disbursement
+        </div>
+        <div class="nav-item" data-feature="repayment-schedule" data-feature-category="operations">
+          Repayment Schedule
+        </div>
+        <div class="nav-item" data-feature="customer-profile" data-feature-category="crm">
+          Customer Profile
+        </div>
+        <div class="nav-item" data-feature="reports" data-feature-category="analytics">
+          Reports
+        </div>
+      </div>
+
+      <div class="content-area">
+        <!-- Dashboard -->
+        <div class="feature-section active" id="dashboard">
+          <div class="dashboard-content">
+            <h1 class="dashboard-title">Enterprise Lending Management</h1>
+            <p class="dashboard-subtitle">Streamline your loan origination process with comprehensive portfolio monitoring, automated workflows, and enterprise-grade analytics designed for modern financial institutions.</p>
+            
+            <div class="stats-grid">
+              <div class="stat-card">
+                <h4>Active Loans</h4>
+                <p>1,234</p>
+              </div>
+              <div class="stat-card">
+                <h4>Pending Approvals</h4>
+                <p>56</p>
+              </div>
+              <div class="stat-card">
+                <h4>Total Disbursed</h4>
+                <p>$45.2M</p>
+              </div>
+              <div class="stat-card">
+                <h4>Portfolio Health</h4>
+                <p>92%</p>
+              </div>
+            </div>
+
+            <div class="journey-tracker">
+              <h4>Current Session Journey</h4>
+              <div class="journey-steps" id="journeyDisplay"></div>
+            </div>
+          </div>
+          <div class="dashboard-image"></div>
+        </div>
+
+        <!-- Loan Application -->
+        <div class="feature-section" id="loan-application">
+          <h2>New Loan Application</h2>
+          <p class="section-description">Submit a new loan application for processing. All required fields must be completed for compliance with federal lending regulations.</p>
+          
+          <div class="section-image" style="background-image: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=400&fit=crop');"></div>
+          
+          <form id="loanForm">
+            <div class="form-group">
+              <label>Applicant Full Name</label>
+              <input type="text" id="applicantName" placeholder="Enter full legal name" required>
+            </div>
+            <div class="form-group">
+              <label>Requested Loan Amount</label>
+              <input type="number" id="loanAmount" placeholder="Enter amount in USD" required>
+            </div>
+            <div class="form-group">
+              <label>Loan Purpose</label>
+              <select id="loanPurpose">
+                <option>Home Purchase</option>
+                <option>Mortgage Refinance</option>
+                <option>Business Expansion</option>
+                <option>Equipment Financing</option>
+                <option>Education</option>
+                <option>Personal Loan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Current Employer</label>
+              <input type="text" id="employer" placeholder="Enter current employer name">
+            </div>
+            <div class="alert-box alert-info">
+              <strong>Privacy Notice:</strong> All information is encrypted and protected under the Gramm-Leach-Bliley Act (GLBA). Your data will only be used for loan processing purposes.
+            </div>
+            <button type="submit" class="btn btn-primary" data-feature="submit-application" data-feature-category="lending">
+              Submit Application
+            </button>
+          </form>
+
+          <div class="result-box" id="applicationResult">
+            <div class="alert-box alert-success">
+              <strong>✓ Application Submitted Successfully!</strong>
+            </div>
+            <h3>Application Details</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">Application ID</div>
+                <div class="info-value" id="appId"></div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Applicant Name</div>
+                <div class="info-value" id="confirmName"></div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Loan Amount</div>
+                <div class="info-value" id="confirmAmount"></div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Status</div>
+                <div class="info-value" style="color: var(--warning);">Under Review</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Credit Check -->
+        <div class="feature-section" id="credit-check">
+          <h2>Credit Score Verification</h2>
+          <p class="section-description">Run comprehensive credit checks through integrated bureau access. Reports include FICO scores and detailed credit history from all three major bureaus.</p>
+          
+          <div class="section-image" style="background-image: url('https://images.unsplash.com/photo-1551836022-4c4c79ecde51?w=1200&h=400&fit=crop');"></div>
+          
+          <div class="form-group">
+            <label>Customer ID or Social Security Number</label>
+            <input type="text" id="customerId" placeholder="Enter customer ID or SSN">
+          </div>
+          <button class="btn btn-primary" onclick="runCreditCheck()" data-feature="run-credit-check" data-feature-category="risk">
+            Run Credit Bureau Check
+          </button>
+          
+          <div class="result-box" id="creditResult">
+            <h3>Credit Score: <span class="highlight" id="creditScore">720</span></h3>
+            <p style="color: var(--text-secondary); margin-top: 12px;">Good credit standing - Approved for processing. This score is based on reports from Experian, TransUnion, and Equifax using the FICO Score 8 calculation model.</p>
+            <div class="info-grid" style="margin-top: 20px;">
+              <div class="info-item">
+                <div class="info-label">Credit Utilization</div>
+                <div class="info-value">28%</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Payment History</div>
+                <div class="info-value" style="color: var(--success);">Excellent</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Total Accounts</div>
+                <div class="info-value">12</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Derogatory Marks</div>
+                <div class="info-value">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Upload -->
+        <div class="feature-section" id="document-upload">
+          <h2>Document Management</h2>
+          <p class="section-description">Upload and manage all required loan documentation. Accepted formats include PDF, JPG, PNG, and DOCX. Maximum file size: 10MB per document.</p>
+          
+          <div class="section-image" style="background-image: url('https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=1200&h=400&fit=crop');"></div>
+          
+          <div class="form-group">
+            <label>Upload Documents</label>
+            <input type="file" id="fileInput" multiple data-feature="document-upload-input" data-feature-category="operations">
+          </div>
+          <button class="btn btn-primary" onclick="uploadDocuments()" data-feature="upload-documents" data-feature-category="operations">
+            Upload Documents
+          </button>
+          
+          <div class="result-box" id="uploadResult">
+            <div class="alert-box alert-success">
+              <strong>✓ Documents Uploaded Successfully!</strong>
+            </div>
+            <p style="margin: 16px 0;"><span id="fileCount">0</span> document(s) uploaded and encrypted.</p>
+            <div id="fileList"></div>
+          </div>
+
+          <div class="alert-box alert-info" style="margin-top: 20px;">
+            <strong>Document Requirements:</strong> Please upload income verification (W-2, pay stubs), bank statements (last 3 months), tax returns (last 2 years), and valid government-issued ID. All documents are encrypted using AES-256 encryption.
+          </div>
+        </div>
+
+        <!-- Loan Approval -->
+        <div class="feature-section" id="loan-approval">
+          <h2>Loan Approval Workflow</h2>
+          <p class="section-description">Review pending loan applications and make approval decisions. All actions are logged and auditable for regulatory compliance.</p>
+          
+          <div class="section-image" style="background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&h=400&fit=crop');"></div>
+          
+          <p style="color: var(--text-secondary); margin: 20px 0;">Review and process pending applications from your queue. Each decision is recorded with timestamp and user authentication for compliance tracking.</p>
+          
+          <div class="info-grid" style="margin: 24px 0;">
+            <div class="info-item">
+              <div class="info-label">Application ID</div>
+              <div class="info-value">APP-2024-5847</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Applicant</div>
+              <div class="info-value">Sarah Johnson</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Amount</div>
+              <div class="info-value">$285,000</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Credit Score</div>
+              <div class="info-value" style="color: var(--success);">742</div>
+            </div>
+          </div>
+
+          <button class="btn btn-success" onclick="approveLoan()" data-feature="approve-loan" data-feature-category="lending">
+            Approve Loan
+          </button>
+          <button class="btn btn-danger" onclick="rejectLoan()" data-feature="reject-loan" data-feature-category="lending" style="margin-left: 12px;">
+            Reject Loan
+          </button>
+
+          <div class="result-box" id="approvalResult"></div>
+        </div>
+
+        <!-- Risk Assessment -->
+        <div class="feature-section" id="risk-assessment">
+          <h2>Risk Assessment Engine</h2>
+          <p class="section-description">AI-powered risk analysis using machine learning algorithms to evaluate default probability, fraud detection, and portfolio risk metrics.</p>
+          
+          <div class="section-image" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=400&fit=crop');"></div>
+          
+          <p style="color: var(--text-secondary); margin: 20px 0;">Our advanced risk scoring system analyzes over 50 data points including credit history, income verification, employment stability, and behavioral patterns to provide comprehensive risk assessment.</p>
+          <button class="btn btn-primary" onclick="calculateRisk()" data-feature="calculate-risk" data-feature-category="risk">
+            Calculate Risk Score
+          </button>
+
+          <div class="result-box" id="riskResult">
+            <h3>Risk Score: <span class="highlight" style="color: var(--success);" id="riskScore">12.4%</span></h3>
+            <p style="color: var(--text-secondary); margin-top: 12px;">Low Risk - Recommended for approval</p>
+            <div class="info-grid" style="margin-top: 20px;">
+              <div class="info-item">
+                <div class="info-label">Default Probability</div>
+                <div class="info-value">1.2%</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Fraud Score</div>
+                <div class="info-value" style="color: var(--success);">Very Low</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">DTI Ratio</div>
+                <div class="info-value">32%</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Risk Grade</div>
+                <div class="info-value" style="color: var(--success);">A</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disbursement -->
+        <div class="feature-section" id="disbursement">
+          <h2>Loan Disbursement</h2>
+          <p class="section-description">Process approved loan disbursements through ACH, wire transfer, or check. All transactions are secured and tracked for audit compliance.</p>
+          
+          <div class="section-image" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=1200&h=400&fit=crop');"></div>
+          
+          <p style="color: var(--text-secondary); margin: 20px 0;">Securely transfer approved loan funds to borrower accounts. Choose from multiple disbursement methods with varying processing times and fee structures.</p>
+          <button class="btn btn-primary" onclick="disburseFunds()" data-feature="disburse-funds" data-feature-category="operations">
+            Process Disbursement
+          </button>
+
+          <div class="result-box" id="disburseResult">
+            <div class="alert-box alert-success">
+              <strong>✓ Disbursement Initiated!</strong>
+            </div>
+            <div class="info-grid" style="margin-top: 16px;">
+              <div class="info-item">
+                <div class="info-label">Transaction ID</div>
+                <div class="info-value" id="transactionId"></div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Amount</div>
+                <div class="info-value">$285,000</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Method</div>
+                <div class="info-value">ACH Transfer</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Status</div>
+                <div class="info-value" style="color: var(--warning);">Processing</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Repayment Schedule -->
+        <div class="feature-section" id="repayment-schedule">
+          <h2>Repayment Schedule</h2>
+          <p class="section-description">Generate and manage loan repayment schedules with detailed amortization calculations. View payment breakdowns and projected interest costs.</p>
+          
+          <div class="section-image" style="background-image: url('https://images.unsplash.com/photo-1434626881859-194d67b2b86f?w=1200&h=400&fit=crop');"></div>
+          
+          <p style="color: var(--text-secondary); margin: 20px 0;">Create detailed payment schedules showing principal and interest breakdown for each payment period. Calculations use standard amortization formulas and account for compounding interest.</p>
+          <button class="btn btn-primary" onclick="generateSchedule()" data-feature="generate-schedule" data-feature-category="operations">
+            Generate Schedule
+          </button>
+
+          <div class="result-box" id="scheduleResult">
+            <h3>Payment Schedule Generated</h3>
+            <div class="info-grid" style="margin-top: 16px;">
+              <div class="info-item">
+                <div class="info-label">Monthly Payment</div>
+                <div class="info-value">$1,847</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Total Payments</div>
+                <div class="info-value">360</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Total Interest</div>
+                <div class="info-value">$379,920</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Payoff Date</div>
+                <div class="info-value">May 2054</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Profile -->
+        <div class="feature-section" id="customer-profile">
+          <h2>Customer Profile</h2>
+          <p class="section-description">Access comprehensive customer profiles including loan history, payment records, credit information, and contact details. All data protected under GLBA privacy regulations.</p>
+          
+          <div class="section-image" style="background-image: url('https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&h=400&fit=crop');"></div>
+          
+          <div class="form-group" style="max-width: 500px;">
+            <label>Search Customer Database</label>
+            <input type="text" id="customerSearch" class="form-input" placeholder="Enter customer name, ID, email, or phone number">
+          </div>
+          <p style="color: var(--text-secondary); margin: 20px 0;">View detailed customer information, transaction history, and relationship timeline. Search by customer ID, name, email, or phone number.</p>
+          <button class="btn btn-primary" onclick="viewProfile()" data-feature="view-profile" data-feature-category="crm">
+            Search Customer Records
+          </button>
+
+          <div class="result-box" id="profileResult">
+            <h3>Customer Profile: Sarah M. Johnson</h3>
+            <div class="info-grid" style="margin-top: 16px;">
+              <div class="info-item">
+                <div class="info-label">Customer ID</div>
+                <div class="info-value">CUST-847291</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Member Since</div>
+                <div class="info-value">Mar 2019</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Total Loans</div>
+                <div class="info-value">3</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Credit Score</div>
+                <div class="info-value" style="color: var(--success);">742</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Account Status</div>
+                <div class="info-value" style="color: var(--success);">Active</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Lifetime Value</div>
+                <div class="info-value">$425,000</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reports -->
+        <div class="feature-section" id="reports">
+          <h2>Analytics & Reports</h2>
+          <p class="section-description">Generate comprehensive business intelligence reports including portfolio analysis, risk metrics, origination trends, and regulatory compliance documentation.</p>
+          
+          <div class="section-image" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=400&fit=crop');"></div>
+          
+          <div class="alert-box alert-info">
+            <strong>Enterprise Feature:</strong> Advanced reporting and analytics capabilities require an Enterprise license. Contact your account manager to upgrade and access full reporting features including custom dashboards, automated report scheduling, and API access.
+          </div>
+          <p style="color: var(--text-secondary); margin: 20px 0;">Export data in multiple formats including PDF, Excel, and CSV. Schedule automated report delivery and create custom analytics dashboards.</p>
+          <button class="btn btn-primary" onclick="generateReport()" data-feature="generate-report" data-feature-category="analytics">
+            Generate Report
+          </button>
+
+          <div class="result-box" id="reportResult">
+            <div class="alert-box alert-success">
+              <strong>✓ Report Generated Successfully!</strong>
+            </div>
+            <div class="info-grid" style="margin-top: 16px;">
+              <div class="info-item">
+                <div class="info-label">Report Type</div>
+                <div class="info-value">Portfolio Analysis</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Period</div>
+                <div class="info-value">Q1 2024</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Format</div>
+                <div class="info-value">PDF</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">File Size</div>
+                <div class="info-value">2.4 MB</div>
+              </div>
+            </div>
+            <button class="btn btn-success" style="margin-top: 20px;">Download Report</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <!-- Company Info -->
+      <div class="footer-section">
+        <div class="footer-logo">
+          <div class="footer-logo-icon">LP</div>
+          <div class="footer-logo-text">LendPro</div>
+        </div>
+        <p>Enterprise lending management platform powering digital transformation for modern financial institutions worldwide.</p>
+        <div class="footer-badge">FDIC Insured</div>
+        <div class="footer-badge">SOC 2 Certified</div>
+      </div>
+
+      <!-- Products -->
+      <div class="footer-section">
+        <h4>Products</h4>
+        <ul class="footer-links">
+          <li><a href="#">Loan Origination</a></li>
+          <li><a href="#">Credit Decisioning</a></li>
+          <li><a href="#">Risk Management</a></li>
+          <li><a href="#">Portfolio Analytics</a></li>
+          <li><a href="#">Compliance Suite</a></li>
+          <li><a href="#">API Platform</a></li>
+        </ul>
+      </div>
+
+      <!-- Solutions -->
+      <div class="footer-section">
+        <h4>Solutions</h4>
+        <ul class="footer-links">
+          <li><a href="#">Commercial Banking</a></li>
+          <li><a href="#">Consumer Lending</a></li>
+          <li><a href="#">Mortgage Services</a></li>
+          <li><a href="#">Small Business</a></li>
+          <li><a href="#">Auto Finance</a></li>
+          <li><a href="#">Credit Unions</a></li>
+        </ul>
+      </div>
+
+      <!-- Resources -->
+      <div class="footer-section">
+        <h4>Resources</h4>
+        <ul class="footer-links">
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">API Reference</a></li>
+          <li><a href="#">Case Studies</a></li>
+          <li><a href="#">Webinars</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Support Center</a></li>
+        </ul>
+      </div>
+
+      <!-- Company -->
+      <div class="footer-section">
+        <h4>Company</h4>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press Kit</a></li>
+          <li><a href="#">Partners</a></li>
+          <li><a href="#">Contact Sales</a></li>
+          <li><a href="#">Contact Support</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2024 LendPro Enterprise. All rights reserved. Member FDIC. Equal Housing Lender.</p>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Security</a>
+        <a href="#">Accessibility</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="notification" id="notification">
+    <span id="notificationText"></span>
+  </div>
+
+  <script>
+    let tracker = new FeatureTracker({
+      endpoint: 'http://localhost:3000/api/events',
+      tenantId: 'bank-alpha',
+      deploymentMode: 'cloud',
+      enabled: true,
+      autoCapture: true,
+      privacyLevel: 'standard'
+    });
+
+    const features = [
+      { name: 'loan-application', enabled: true, licensed: true, version: '2.1' },
+      { name: 'credit-check', enabled: true, licensed: true, version: '1.5' },
+      { name: 'document-upload', enabled: true, licensed: true, version: '1.0' },
+      { name: 'loan-approval', enabled: true, licensed: true, version: '2.0' },
+      { name: 'risk-assessment', enabled: true, licensed: true, version: '3.0' },
+      { name: 'disbursement', enabled: true, licensed: true, version: '1.8' },
+      { name: 'repayment-schedule', enabled: true, licensed: true, version: '1.2' },
+      { name: 'customer-profile', enabled: true, licensed: true, version: '2.5' },
+      { name: 'reports', enabled: true, licensed: false, version: '1.0' }
+    ];
+
+    tracker.trackConfiguration(features);
+
+    // Indian customer database
+    const indianCustomers = [
+      { name: 'Rajesh Kumar Sharma', email: 'rajesh.sharma@email.com', phone: '(555) 234-8901', since: 'March 2018', score: 762, loans: 3, value: 425000 },
+      { name: 'Priya Patel', email: 'priya.patel@email.com', phone: '(555) 345-9012', since: 'July 2019', score: 745, loans: 2, value: 385000 },
+      { name: 'Arjun Reddy', email: 'arjun.reddy@email.com', phone: '(555) 456-0123', since: 'January 2020', score: 728, loans: 1, value: 295000 },
+      { name: 'Sneha Deshmukh', email: 'sneha.deshmukh@email.com', phone: '(555) 567-1234', since: 'September 2017', score: 780, loans: 4, value: 575000 },
+      { name: 'Vikram Singh Chauhan', email: 'vikram.chauhan@email.com', phone: '(555) 678-2345', since: 'May 2021', score: 695, loans: 1, value: 185000 },
+      { name: 'Ananya Krishnan', email: 'ananya.krishnan@email.com', phone: '(555) 789-3456', since: 'November 2019', score: 752, loans: 2, value: 340000 },
+      { name: 'Rohit Mehta', email: 'rohit.mehta@email.com', phone: '(555) 890-4567', since: 'February 2018', score: 738, loans: 3, value: 465000 },
+      { name: 'Kavya Nair', email: 'kavya.nair@email.com', phone: '(555) 901-5678', since: 'August 2020', score: 710, loans: 1, value: 225000 },
+      { name: 'Aditya Malhotra', email: 'aditya.malhotra@email.com', phone: '(555) 012-6789', since: 'April 2019', score: 768, loans: 2, value: 395000 },
+      { name: 'Ishita Gupta', email: 'ishita.gupta@email.com', phone: '(555) 123-7890', since: 'December 2020', score: 721, loans: 1, value: 265000 }
+    ];
+
+    const loanTypes = ['Auto Loan', 'Home Mortgage', 'Personal Loan', 'Business Loan', 'Home Equity Line', 'Education Loan'];
+    const loanStatuses = ['Active', 'Paid Off', 'Active', 'Active']; // More Active than Paid Off
+
+    function updateJourneyDisplay() {
+      const journey = tracker.getJourneyPath();
+      const display = document.getElementById('journeyDisplay');
+      display.innerHTML = journey.slice(-10).map(step =>
+        `<div class="journey-step">${step}</div>`
+      ).join('');
+    }
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const featureId = this.getAttribute('data-feature');
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.feature-section').forEach(section => section.classList.remove('active'));
+        document.getElementById(featureId).classList.add('active');
+        tracker.trackJourney(featureId);
+        updateJourneyDisplay();
+      });
+    });
+
+    // Loan Application
+    document.getElementById('loanForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const appId = 'APP-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 9000 + 1000);
+      const name = document.getElementById('applicantName').value;
+      const amount = document.getElementById('loanAmount').value;
+      
+      document.getElementById('appId').textContent = appId;
+      document.getElementById('confirmName').textContent = name;
+      document.getElementById('confirmAmount').textContent = '$' + Number(amount).toLocaleString();
+      document.getElementById('applicationResult').classList.add('show');
+      showNotification('Application ' + appId + ' submitted successfully!');
+      document.getElementById('loanForm').reset();
+    });
+
+    // Credit Check
+    function runCreditCheck() {
+      const score = Math.floor(Math.random() * (850 - 650) + 650);
+      const utilization = Math.floor(Math.random() * 50 + 10);
+      const accounts = Math.floor(Math.random() * 15 + 5);
+      
+      document.getElementById('creditScore').textContent = score;
+      
+      // Update other credit details with random data
+      const creditResult = document.getElementById('creditResult');
+      const infoItems = creditResult.querySelectorAll('.info-value');
+      if (infoItems.length >= 4) {
+        infoItems[0].textContent = utilization + '%';
+        infoItems[2].textContent = accounts;
+      }
+      
+      creditResult.classList.add('show');
+      showNotification('Credit check completed! Score: ' + score);
+    }
+
+    // Document Upload
+    function uploadDocuments() {
+      const files = document.getElementById('fileInput').files;
+      if (files.length === 0) {
+        showNotification('Please select files to upload');
+        return;
+      }
+      
+      document.getElementById('fileCount').textContent = files.length;
+      let fileList = '<div style="margin-top: 12px;"><strong>Uploaded Files:</strong><ul style="margin-left: 20px; margin-top: 8px;">';
+      for (let file of files) {
+        fileList += `<li style="margin: 4px 0; padding: 4px 0;">${file.name} <span style="color: var(--success); font-weight: 600;">✓</span></li>`;
+      }
+      fileList += '</ul></div>';
+      document.getElementById('fileList').innerHTML = fileList;
+      document.getElementById('uploadResult').classList.add('show');
+      showNotification(files.length + ' document(s) uploaded and encrypted successfully!');
+    }
+
+    // Approve Loan
+    function approveLoan() {
+      const appId = 'APP-2024-' + Math.floor(Math.random() * 9000 + 1000);
+      const amount = '$' + (Math.floor(Math.random() * 400000 + 100000)).toLocaleString();
+      
+      document.getElementById('approvalResult').innerHTML = `
+        <div class="alert-box alert-success">
+          <strong>✓ Loan Approved!</strong><br>
+          Application ${appId} has been approved for ${amount}. Disbursement can proceed.
+        </div>
+      `;
+      document.getElementById('approvalResult').classList.add('show');
+      showNotification('Loan ' + appId + ' approved successfully!');
+    }
+
+    // Reject Loan
+    function rejectLoan() {
+      const appId = 'APP-2024-' + Math.floor(Math.random() * 9000 + 1000);
+      const reasons = [
+        'Insufficient credit history',
+        'Debt-to-income ratio exceeds threshold',
+        'Incomplete documentation',
+        'Credit score below minimum requirement',
+        'Employment verification failed'
+      ];
+      const reason = reasons[Math.floor(Math.random() * reasons.length)];
+      
+      document.getElementById('approvalResult').innerHTML = `
+        <div class="alert-box" style="background: #FFEBE6; border-color: #DE350B; color: #BF2600;">
+          <strong>✗ Loan Rejected</strong><br>
+          Application ${appId} has been rejected. Reason: ${reason}. Applicant will be notified.
+        </div>
+      `;
+      document.getElementById('approvalResult').classList.add('show');
+      showNotification('Loan ' + appId + ' rejected');
+    }
+
+    // Risk Assessment
+    function calculateRisk() {
+      const risk = (Math.random() * 25 + 8).toFixed(1);
+      const fraudScore = Math.floor(Math.random() * 15 + 2);
+      const dti = Math.floor(Math.random() * 25 + 20);
+      const grades = ['A', 'A-', 'B+', 'B', 'B-'];
+      const grade = grades[Math.floor(Math.random() * grades.length)];
+      
+      document.getElementById('riskScore').textContent = risk + '%';
+      
+      // Update risk details
+      const riskResult = document.getElementById('riskResult');
+      const infoItems = riskResult.querySelectorAll('.info-value');
+      if (infoItems.length >= 4) {
+        infoItems[0].textContent = fraudScore < 10 ? 'Very Low (' + fraudScore + '/100)' : 'Low (' + fraudScore + '/100)';
+        infoItems[1].textContent = dti + '%';
+        infoItems[2].textContent = grade;
+      }
+      
+      riskResult.classList.add('show');
+      showNotification('Risk assessment completed! Score: ' + risk + '%');
+    }
+
+    // Disbursement
+    function disburseFunds() {
+      const txId = 'TXN-' + Date.now();
+      const amounts = [185000, 225000, 285000, 325000, 425000, 565000];
+      const amount = amounts[Math.floor(Math.random() * amounts.length)];
+      
+      document.getElementById('transactionId').textContent = txId;
+      
+      // Update amount in result
+      const disburseResult = document.getElementById('disburseResult');
+      const amountElement = disburseResult.querySelector('.info-value');
+      if (amountElement) {
+        amountElement.textContent = '$' + amount.toLocaleString();
+      }
+      
+      disburseResult.classList.add('show');
+      showNotification('Transaction ' + txId + ' - $' + amount.toLocaleString() + ' disbursement initiated!');
+    }
+
+    // Generate Schedule
+    function generateSchedule() {
+      const amounts = [185000, 225000, 285000, 325000, 425000];
+      const principal = amounts[Math.floor(Math.random() * amounts.length)];
+      const rates = [5.25, 5.75, 6.25, 6.75, 7.25];
+      const rate = rates[Math.floor(Math.random() * rates.length)];
+      const terms = [180, 240, 360];
+      const term = terms[Math.floor(Math.random() * terms.length)];
+      
+      const monthlyRate = rate / 100 / 12;
+      const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, term)) / (Math.pow(1 + monthlyRate, term) - 1);
+      const totalInterest = (monthlyPayment * term) - principal;
+      
+      const scheduleResult = document.getElementById('scheduleResult');
+      const infoItems = scheduleResult.querySelectorAll('.info-value');
+      if (infoItems.length >= 4) {
+        infoItems[0].textContent = '$' + Math.round(monthlyPayment).toLocaleString();
+        infoItems[1].textContent = term;
+        infoItems[2].textContent = '$' + Math.round(totalInterest).toLocaleString();
+        
+        const today = new Date();
+        const payoffDate = new Date(today.setMonth(today.getMonth() + term));
+        infoItems[3].textContent = payoffDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      }
+      
+      scheduleResult.classList.add('show');
+      showNotification('Repayment schedule generated for $' + principal.toLocaleString() + ' at ' + rate + '%');
+    }
+
+    // View Profile
+    function viewProfile() {
+      const customer = indianCustomers[Math.floor(Math.random() * indianCustomers.length)];
+      const custId = 'CUST-' + Math.floor(Math.random() * 900000 + 100000);
+      
+      // Generate random loan history
+      const numLoans = Math.floor(Math.random() * 3 + 1);
+      let loanHistory = '';
+      
+      for (let i = 0; i < numLoans; i++) {
+        const loanId = 'LOAN-' + (2019 + Math.floor(Math.random() * 6)) + '-' + Math.floor(Math.random() * 9000 + 1000);
+        const loanType = loanTypes[Math.floor(Math.random() * loanTypes.length)];
+        const originalAmount = Math.floor(Math.random() * 400000 + 50000);
+        const status = loanStatuses[Math.floor(Math.random() * loanStatuses.length)];
+        const currentBalance = status === 'Paid Off' ? 0 : Math.floor(originalAmount * (Math.random() * 0.4 + 0.6));
+        const year = 2019 + Math.floor(Math.random() * 6);
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const month = months[Math.floor(Math.random() * 12)];
+        const day = Math.floor(Math.random() * 28 + 1);
+        const statusBadge = status === 'Paid Off' ? 'status-approved' : 'status-approved';
+        
+        loanHistory += `
+          <tr>
+            <td style="font-weight: 600;">${loanId}</td>
+            <td>${loanType}</td>
+            <td>$${originalAmount.toLocaleString()}</td>
+            <td>$${currentBalance.toLocaleString()}</td>
+            <td><span class="status-badge ${statusBadge}">${status}</span></td>
+            <td>${month} ${day}, ${year}</td>
+          </tr>
+        `;
+      }
+      
+      const profileHTML = `
+        <h3>Customer Profile: ${customer.name}</h3>
+        <div class="info-grid" style="margin-top: 16px;">
+          <div class="info-item">
+            <div class="info-label">Customer ID</div>
+            <div class="info-value">${custId}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Full Name</div>
+            <div class="info-value">${customer.name}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Email Address</div>
+            <div class="info-value">${customer.email}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Phone Number</div>
+            <div class="info-value">${customer.phone}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Member Since</div>
+            <div class="info-value">${customer.since}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Current Credit Score</div>
+            <div class="info-value" style="color: var(--success);">${customer.score}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Customer Status</div>
+            <div class="info-value" style="color: var(--success);">Active - Good Standing</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Total Lifetime Value</div>
+            <div class="info-value">$${customer.value.toLocaleString()}</div>
+          </div>
+        </div>
+        
+        <h4 style="margin: 32px 0 16px; font-size: 16px; font-weight: 700; color: var(--text-primary);">Loan History</h4>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Loan ID</th>
+              <th>Type</th>
+              <th>Original Amount</th>
+              <th>Current Balance</th>
+              <th>Status</th>
+              <th>Opened Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${loanHistory}
+          </tbody>
+        </table>
+      `;
+      
+      document.getElementById('profileResult').innerHTML = profileHTML;
+      document.getElementById('profileResult').classList.add('show');
+      showNotification('Customer profile loaded: ' + customer.name);
+    }
+
+    // Generate Report
+    function generateReport() {
+      const reportTypes = ['Monthly Performance Summary', 'Portfolio Analysis', 'Risk Metrics Dashboard', 'Compliance Report'];
+      const reportType = reportTypes[Math.floor(Math.random() * reportTypes.length)];
+      const fileSize = (Math.random() * 4 + 1).toFixed(1);
+      const reportId = 'RPT-' + Date.now();
+      
+      const reportHTML = `
+        <div class="alert-box alert-success">
+          <strong>✓ Report Generated Successfully!</strong><br>
+          Your ${reportType} has been compiled and is ready for download.
+        </div>
+        <h3 style="margin-top: 24px;">Report Details</h3>
+        <div class="info-grid" style="margin-top: 16px;">
+          <div class="info-item">
+            <div class="info-label">Report ID</div>
+            <div class="info-value">${reportId}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Report Type</div>
+            <div class="info-value">${reportType}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Generated On</div>
+            <div class="info-value">${new Date().toLocaleDateString()}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Format</div>
+            <div class="info-value">PDF</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">File Size</div>
+            <div class="info-value">${fileSize} MB</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Expires On</div>
+            <div class="info-value">${new Date(Date.now() + 7*24*60*60*1000).toLocaleDateString()}</div>
+          </div>
+        </div>
+        <button class="btn btn-success" id="downloadReportBtn" style="margin-top: 20px;">Download Report to Computer</button>
+      `;
+      
+      document.getElementById('reportResult').innerHTML = reportHTML;
+      document.getElementById('reportResult').classList.add('show');
+      
+      // Add event listener to download button after it's created
+      setTimeout(() => {
+        const downloadBtn = document.getElementById('downloadReportBtn');
+        if (downloadBtn) {
+          downloadBtn.addEventListener('click', () => {
+            downloadBtn.textContent = 'Preparing Download...';
+            downloadBtn.disabled = true;
+            showNotification('Preparing ' + reportType + ' for download...');
+            
+            setTimeout(() => {
+              // Generate actual report content
+              const reportContent = generateReportContent(reportType, reportId);
+              
+              // Create blob and download
+              const blob = new Blob([reportContent], { type: 'text/plain' });
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = reportType.replace(/\s+/g, '_') + '_' + reportId + '.txt';
+              document.body.appendChild(a);
+              a.click();
+              window.URL.revokeObjectURL(url);
+              document.body.removeChild(a);
+              
+              downloadBtn.textContent = '✓ Downloaded to Your Computer';
+              downloadBtn.style.background = 'var(--success)';
+              showNotification('Report saved to your Downloads folder!');
+            }, 1000);
+          });
+        }
+      }, 100);
+      
+      showNotification('Report generated: ' + reportType);
+    }
+
+    // Generate report content
+    function generateReportContent(reportType, reportId) {
+      const date = new Date().toLocaleDateString();
+      const time = new Date().toLocaleTimeString();
+      
+      let content = `
+╔══════════════════════════════════════════════════════════════════╗
+║                        LENDPRO ENTERPRISE                        ║
+║                    Enterprise Lending Platform                   ║
+╚══════════════════════════════════════════════════════════════════╝
+
+${reportType.toUpperCase()}
+Report ID: ${reportId}
+Generated: ${date} at ${time}
+Format: PDF Export (Text Preview)
+
+════════════════════════════════════════════════════════════════════
+
+EXECUTIVE SUMMARY
+────────────────────────────────────────────────────────────────────
+
+This report provides comprehensive analysis of lending operations
+and portfolio performance for the specified reporting period.
+
+KEY METRICS
+────────────────────────────────────────────────────────────────────
+
+Active Loans:                               1,234
+Pending Approvals:                             56
+Total Portfolio Value:                   $847.3M
+Portfolio Health Score:                      92%
+Average Credit Score:                        742
+Default Rate:                               1.8%
+Approval Rate:                             68.2%
+Average Loan Amount:                    $285,000
+
+LOAN ORIGINATION ANALYSIS
+────────────────────────────────────────────────────────────────────
+
+Total Applications Processed:                847
+Approved Applications:                       578
+Rejected Applications:                       269
+Average Processing Time:                2.3 days
+Customer Satisfaction:                     94.5%
+
+RISK ASSESSMENT SUMMARY
+────────────────────────────────────────────────────────────────────
+
+Low Risk (Grade A):                          45%
+Medium Risk (Grade B):                       38%
+High Risk (Grade C):                         17%
+Average Risk Score:                       18.7%
+Fraud Detection Rate:                     99.8%
+
+PORTFOLIO COMPOSITION
+────────────────────────────────────────────────────────────────────
+
+Home Mortgages:                              42%
+Business Loans:                              28%
+Personal Loans:                              15%
+Auto Loans:                                  10%
+Other:                                        5%
+
+COMPLIANCE STATUS
+────────────────────────────────────────────────────────────────────
+
+GLBA Compliance:                        ✓ PASS
+FCRA Compliance:                        ✓ PASS
+ECOA Compliance:                        ✓ PASS
+SOC 2 Certification:                    ✓ ACTIVE
+Last Audit Date:                   ${new Date(Date.now() - 30*24*60*60*1000).toLocaleDateString()}
+Next Audit Due:                    ${new Date(Date.now() + 335*24*60*60*1000).toLocaleDateString()}
+
+RECOMMENDATIONS
+────────────────────────────────────────────────────────────────────
+
+1. Continue monitoring high-risk loan segments
+2. Optimize approval workflow to reduce processing time
+3. Expand digital lending capabilities
+4. Enhance fraud detection algorithms
+5. Maintain current compliance standards
+
+GEOGRAPHIC DISTRIBUTION
+────────────────────────────────────────────────────────────────────
+
+North Region:                                32%
+South Region:                                28%
+East Region:                                 22%
+West Region:                                 18%
+
+DISBURSEMENT SUMMARY
+────────────────────────────────────────────────────────────────────
+
+Total Disbursed (YTD):                  $45.2M
+Average Disbursement:                  $325,000
+Disbursement Methods:
+  - ACH Transfer:                            65%
+  - Wire Transfer:                           28%
+  - Cashier's Check:                          7%
+
+CUSTOMER INSIGHTS
+────────────────────────────────────────────────────────────────────
+
+Total Active Customers:                    2,847
+New Customers (This Period):                 234
+Customer Retention Rate:                   96.3%
+Average Customer Lifetime Value:      $425,000
+Repeat Customer Rate:                      34%
+
+════════════════════════════════════════════════════════════════════
+
+CONFIDENTIAL - FOR INTERNAL USE ONLY
+Member FDIC | Equal Housing Lender
+
+This report contains proprietary and confidential information.
+Unauthorized distribution is prohibited.
+
+Generated by LendPro Enterprise Analytics Platform
+Powered by FeatureIQ Analytics
+
+Report End
+════════════════════════════════════════════════════════════════════
+`;
+      
+      return content;
+    }
+
+    document.getElementById('tenantSelect').addEventListener('change', (e) => {
+      tracker.updateConfig({ tenantId: e.target.value });
+      showNotification(`Switched to ${e.target.options[e.target.selectedIndex].text}`);
+    });
+
+    document.getElementById('deploymentMode').addEventListener('change', (e) => {
+      tracker.updateConfig({ deploymentMode: e.target.value });
+      showNotification(`Deployment mode: ${e.target.options[e.target.selectedIndex].text}`);
+    });
+
+    document.getElementById('trackingEnabled').addEventListener('change', (e) => {
+      if (e.target.checked) {
+        tracker.enable();
+        showNotification('Feature tracking enabled');
+      } else {
+        tracker.disable();
+        showNotification('Feature tracking disabled');
+      }
+    });
+
+    function showNotification(message) {
+      const notification = document.getElementById('notification');
+      document.getElementById('notificationText').textContent = message;
+      notification.classList.add('show');
+      setTimeout(() => notification.classList.remove('show'), 3000);
+    }
+
+    setInterval(updateJourneyDisplay, 2000);
+    updateJourneyDisplay();
+  </script>
+</body>
+</html>
